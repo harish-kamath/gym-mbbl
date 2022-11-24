@@ -6,7 +6,6 @@ from PIL import Image
 from tqdm import tqdm
 from itertools import islice
 from einops import rearrange
-from torch import autocast
 import base64
 from io import BytesIO
 
@@ -23,11 +22,14 @@ def chunk(it, size):
 def load_model_from_config(config, ckpt, verbose=False):
     print(f"Loading model from {ckpt}")
     pl_sd = torch.load(ckpt, map_location="cpu")
+    print("Loaded!")
     if "global_step" in pl_sd:
         print(f"Global Step: {pl_sd['global_step']}")
+    print("Instantiating")
     sd = pl_sd["state_dict"]
     model = instantiate_from_config(config.model)
     m, u = model.load_state_dict(sd, strict=False)
+    print("Instantiated!")
     if len(m) > 0 and verbose:
         print("missing keys:")
         print(m)
@@ -52,8 +54,9 @@ def init():
     model = load_model_from_config(config, f"stable-diffusion-2/768-v-ema.ckpt")
     device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
     model = model.to(device)
+    print("Getting Sampler")
     sampler = DDIMSampler(model)
-
+    print("All Initialization Done!")
 # Inference is ran for every server call
 # Reference your preloaded global model variable here.
 def inference(model_inputs:dict) -> dict:
@@ -77,8 +80,9 @@ def inference(model_inputs:dict) -> dict:
         return {'message': "No prompt provided"}
     
     # Run the model
+    print("Running the model")
     image = None
-    with torch.no_grad(), autocast("cuda"):
+    with torch.no_grad(), torch.cuda.amp.autocast(True):
         for prompts in tqdm([[prompt]], desc="data"):
             uc = None
             if guidance_scale != 1.0:
@@ -99,11 +103,11 @@ def inference(model_inputs:dict) -> dict:
 
             x_samples = model.decode_first_stage(samples)
             x_samples = torch.clamp((x_samples + 1.0) / 2.0, min=0.0, max=1.0)
-
+            print("Collected samples")
             for x_sample in x_samples:
                 x_sample = 255. * rearrange(x_sample.cpu().numpy(), 'c h w -> h w c')
                 image = Image.fromarray(x_sample.astype(np.uint8))
-    
+
     buffered = BytesIO()
     image.save(buffered,format="JPEG")
     image_base64 = base64.b64encode(buffered.getvalue()).decode('utf-8')
@@ -115,7 +119,7 @@ def inference(model_inputs:dict) -> dict:
 if __name__ == "__main__":
     init()
     inference({
-    "prompt": "A monkey riding an elephant",
-    "height": 768,
-    "width": 768
+        "prompt": "A monkey riding an elephant",
+        "height": 768,
+        "width": 768
     })
