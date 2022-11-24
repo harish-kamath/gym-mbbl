@@ -3,20 +3,15 @@ import torch
 import numpy as np
 from omegaconf import OmegaConf
 from PIL import Image
-from tqdm import tqdm, trange
+from tqdm import tqdm
 from itertools import islice
 from einops import rearrange
-from torchvision.utils import make_grid
-from pytorch_lightning import seed_everything
 from torch import autocast
-from contextlib import nullcontext
 import base64
 from io import BytesIO
 
 from ldm.util import instantiate_from_config
 from ldm.models.diffusion.ddim import DDIMSampler
-from ldm.models.diffusion.plms import PLMSSampler
-from ldm.models.diffusion.dpm_solver import DPMSolverSampler
 
 torch.set_grad_enabled(False)
 
@@ -52,7 +47,6 @@ sampler = None
 def init():
     global model
     global sampler
-    seed_everything(42)
 
     config = OmegaConf.load(f"configs/stable-diffusion/v2-inference.yaml")
     model = load_model_from_config(config, f"stable-diffusion-2/768-v-ema.ckpt")
