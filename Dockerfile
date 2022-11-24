@@ -6,6 +6,12 @@ WORKDIR /
 # Install git
 RUN apt-get update && apt-get install -y git
 
+# copy self in
+ADD . .
+
+RUN git lfs install
+RUN git clone https://huggingface.co/stabilityai/stable-diffusion-2
+
 # Install python packages
 RUN pip3 install --upgrade pip
 ADD requirements.txt requirements.txt
