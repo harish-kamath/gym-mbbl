@@ -64,7 +64,7 @@ def init():
     seed_everything(42)
 
     config = OmegaConf.load(f"configs/stable-diffusion/v2-inference.yaml")
-    model = load_model_from_config(config, f"768-v-ema.ckpt")
+    model = load_model_from_config(config, f"stable-diffusion-v2/768-v-ema.ckpt")
 
     device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
     model = model.to(device)
