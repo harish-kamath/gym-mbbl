@@ -10,7 +10,6 @@ from torchvision.utils import make_grid
 from pytorch_lightning import seed_everything
 from torch import autocast
 from contextlib import nullcontext
-from imwatermark import WatermarkEncoder
 import base64
 from io import BytesIO
 
@@ -56,16 +55,11 @@ def init():
     seed_everything(42)
 
     config = OmegaConf.load(f"configs/stable-diffusion/v2-inference.yaml")
-    model = load_model_from_config(config, f"stable-diffusion-v2/768-v-ema.ckpt")
+    model = load_model_from_config(config, f"stable-diffusion-2/768-v-ema.ckpt")
 
     device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
     model = model.to(device)
     sampler = DDIMSampler(model)
-
-    print("Creating invisible watermark encoder (see https://github.com/ShieldMnt/invisible-watermark)...")
-    wm = "SDV2"
-    wm_encoder = WatermarkEncoder()
-    wm_encoder.set_watermark('bytes', wm.encode('utf-8'))
 
 # Inference is ran for every server call
 # Reference your preloaded global model variable here.
@@ -123,3 +117,12 @@ def inference(model_inputs:dict) -> dict:
 
     # Return the results as a dictionary
     return {'image_base64': image_base64}
+
+
+if __name__ == "__main__":
+    init()
+    inference({
+    "prompt": "A monkey riding an elephant",
+    "height": 768,
+    "width": 768
+    })

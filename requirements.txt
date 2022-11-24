@@ -3,7 +3,6 @@ diffusers==0.2.3
 transformers
 scipy
 albumentations==0.4.3
-opencv-python
 pudb==2019.2
 imageio==2.9.0
 imageio-ffmpeg==0.4.2
