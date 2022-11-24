@@ -1,5 +1,5 @@
 # Must use a Cuda version 11+
-FROM pytorch/pytorch:1.11.0-cuda11.3-cudnn8-runtime
+FROM nvcr.io/nvidia/pytorch:22.08-py3
 
 WORKDIR /
 
@@ -10,6 +10,8 @@ RUN apt-get update && apt-get install -y git && apt-get install -y curl
 RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash
 RUN apt-get install git-lfs
 RUN git lfs install
+
+RUN FORCE_CUDA=1 TORCH_CUDA_ARCH_LIST=$TORCH_CUDA_ARCH_LIST pip install git+https://github.com/facebookresearch/xformers@51dd119#egg=xformers
 
 # Install python packages
 RUN pip3 install --upgrade pip
@@ -34,12 +36,12 @@ RUN pip install --upgrade pytorch_lightning
 RUN apt-get install ffmpeg libsm6 libxext6  -y
 RUN pip install opencv-python
 
-RUN conda install -y -c nvidia/label/cuda-11.3.0 cuda-nvcc
-RUN conda install -y -c conda-forge gcc
-RUN conda install conda-libmamba-solver
-RUN conda config --set experimental_solver libmamba
-RUN conda install -y -c conda-forge gxx_linux-64=9.5.0
-RUN FORCE_CUDA=1 TORCH_CUDA_ARCH_LIST=6.0  pip install git+https://github.com/facebookresearch/xformers
+# RUN conda install -y -c nvidia/label/cuda-11.3.0 cuda-nvcc
+# RUN conda install -y -c conda-forge gcc
+# RUN conda install conda-libmamba-solver
+# RUN conda config --set experimental_solver libmamba
+# RUN conda install -y -c conda-forge gxx_linux-64=9.5.0
+# RUN FORCE_CUDA=1 TORCH_CUDA_ARCH_LIST=6.0  pip install git+https://github.com/facebookresearch/xformers
 
 ADD . .
 RUN pip install --no-deps -e .
