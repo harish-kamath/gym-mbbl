@@ -21,7 +21,10 @@ def download_model():
     #     use_auth_token=HF_AUTH_TOKEN
     # )
     os.system("git clone https://huggingface.co/stabilityai/stable-diffusion-2")
-    init()
+    try:
+        init()
+    except:
+        pass
     return
 
 if __name__ == "__main__":
