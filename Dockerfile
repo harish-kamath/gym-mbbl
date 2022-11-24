@@ -33,5 +33,5 @@ ADD app.py .
 
 ADD . .
 RUN pip install -e .
-
+RUN pip install torchtext==0.10.0
 CMD python3 -u server.py

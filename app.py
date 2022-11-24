@@ -50,7 +50,6 @@ def init():
 
     config = OmegaConf.load(f"configs/stable-diffusion/v2-inference.yaml")
     model = load_model_from_config(config, f"stable-diffusion-2/768-v-ema.ckpt")
-
     device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
     model = model.to(device)
     sampler = DDIMSampler(model)
@@ -63,8 +62,8 @@ def inference(model_inputs:dict) -> dict:
 
     # Parse out your arguments
     prompt = model_inputs.get('prompt', None)
-    height = model_inputs.get('height', 512)
-    width = model_inputs.get('width', 512)
+    height = model_inputs.get('height', 768)
+    width = model_inputs.get('width', 768)
     num_inference_steps = model_inputs.get('num_inference_steps', 50)
     guidance_scale = model_inputs.get('guidance_scale', 7.5)
     input_seed = model_inputs.get("seed",None)
