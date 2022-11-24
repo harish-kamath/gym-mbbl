@@ -50,7 +50,7 @@ def init():
     global model
     global sampler
 
-    config = OmegaConf.load(f"configs/stable-diffusion/v2-inference.yaml")
+    config = OmegaConf.load(f"configs/stable-diffusion/v2-inference-v.yaml")
     model = load_model_from_config(config, f"stable-diffusion-2/768-v-ema.ckpt")
     device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
     model = model.to(device)
