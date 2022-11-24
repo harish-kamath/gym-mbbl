@@ -23,11 +23,6 @@ EXPOSE 8000
 # Add your huggingface auth key here
 ENV HF_AUTH_TOKEN=your_token
 
-# Add your model weight files 
-# (in this case we have a python script)
-ADD download.py .
-RUN python3 download.py
-
 # Add your custom app code, init() and inference()
 ADD app.py .
 RUN pip install --upgrade pytorch_lightning
@@ -51,4 +46,10 @@ RUN FORCE_CUDA=1 TORCH_CUDA_ARCH_LIST=$TORCH_CUDA_ARCH_LIST pip install git+http
 
 ADD . .
 RUN pip install --no-deps -e .
+
+# Add your model weight files 
+# (in this case we have a python script)
+ADD download.py .
+RUN python3 download.py
+
 CMD python3 -u server.py

@@ -2,6 +2,7 @@
 # It runs during container build time to get model weights built into the container
 
 import os
+from app import init
 
 def download_model():
     # do a dry run of loading the huggingface model, which will download weights at build time
@@ -20,6 +21,7 @@ def download_model():
     #     use_auth_token=HF_AUTH_TOKEN
     # )
     os.system("git clone https://huggingface.co/stabilityai/stable-diffusion-2")
+    init()
     return
 
 if __name__ == "__main__":
