@@ -19,7 +19,8 @@ def download_model():
     #     scheduler=lms,
     #     use_auth_token=HF_AUTH_TOKEN
     # )
-    pass
+    os.system("git clone https://huggingface.co/stabilityai/stable-diffusion-2")
+    return
 
 if __name__ == "__main__":
     download_model()

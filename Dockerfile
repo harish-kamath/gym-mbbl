@@ -11,7 +11,6 @@ ADD . .
 RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash
 RUN apt-get install git-lfs
 RUN git lfs install
-RUN git clone https://huggingface.co/stabilityai/stable-diffusion-2
 
 # Install python packages
 RUN pip3 install --upgrade pip
