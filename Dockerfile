@@ -39,6 +39,7 @@ ENV DEBCONF_NONINTERACTIVE_SEEN=true
 RUN apt-get install ffmpeg libsm6 libxext6  -y
 RUN pip install opencv-python
 
+ENV TORCH_CUDA_ARCH_LIST="7.5 8.0 8.6"
 RUN FORCE_CUDA=1 TORCH_CUDA_ARCH_LIST=$TORCH_CUDA_ARCH_LIST pip install git+https://github.com/facebookresearch/xformers@51dd119#egg=xformers
 
 # RUN conda install -y -c nvidia/label/cuda-11.3.0 cuda-nvcc
