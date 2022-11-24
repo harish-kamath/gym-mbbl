@@ -4,7 +4,7 @@ FROM pytorch/pytorch:1.11.0-cuda11.3-cudnn8-runtime
 WORKDIR /
 
 # Install git
-RUN apt-get update && apt-get install -y git
+RUN apt-get update && apt-get install -y git && apt-get install -y curl
 
 # copy self in
 RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash
@@ -30,10 +30,17 @@ RUN python3 download.py
 
 # Add your custom app code, init() and inference()
 ADD app.py .
-RUN pip install torchtext==0.10.0
+RUN pip install --upgrade pytorch_lightning
 RUN apt-get install ffmpeg libsm6 libxext6  -y
 RUN pip install opencv-python
 
+RUN conda install -y -c nvidia/label/cuda-11.3.0 cuda-nvcc
+RUN conda install -y -c conda-forge gcc
+RUN conda install conda-libmamba-solver
+RUN conda config --set experimental_solver libmamba
+RUN conda install -y -c conda-forge gxx_linux-64=9.5.0
+RUN FORCE_CUDA=1 TORCH_CUDA_ARCH_LIST=6.0  pip install git+https://github.com/facebookresearch/xformers
+
 ADD . .
-RUN pip install -e .
+RUN pip install --no-deps -e .
 CMD python3 -u server.py
