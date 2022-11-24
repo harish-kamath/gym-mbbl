@@ -30,8 +30,10 @@ RUN python3 download.py
 
 # Add your custom app code, init() and inference()
 ADD app.py .
+RUN pip install torchtext==0.10.0
+RUN apt-get install ffmpeg libsm6 libxext6  -y
+RUN pip install opencv-python
 
 ADD . .
 RUN pip install -e .
-RUN pip install torchtext==0.10.0
 CMD python3 -u server.py
