@@ -31,6 +31,11 @@ RUN python3 download.py
 # Add your custom app code, init() and inference()
 ADD app.py .
 RUN pip install --upgrade pytorch_lightning
+ENV PIP_NO_CACHE_DIR=off
+ENV PIP_DISABLE_PIP_VERSION_CHECK=on
+ENV PIP_DEFAULT_TIMEOUT=100
+ENV DEBIAN_FRONTEND=noninteractive
+ENV DEBCONF_NONINTERACTIVE_SEEN=true
 RUN apt-get install ffmpeg libsm6 libxext6  -y
 RUN pip install opencv-python
 
