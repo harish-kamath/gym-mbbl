@@ -34,7 +34,14 @@ ENV DEBCONF_NONINTERACTIVE_SEEN=true
 RUN apt-get install ffmpeg libsm6 libxext6  -y
 RUN pip install opencv-python
 
-ENV TORCH_CUDA_ARCH_LIST="7.5 8.0 8.6"
+ADD . .
+
+# Add your model weight files 
+# (in this case we have a python script)
+ADD download.py .
+RUN python3 download.py
+
+ENV TORCH_CUDA_ARCH_LIST="6.0 7.0 7.5 8.0 8.6"
 RUN FORCE_CUDA=1 TORCH_CUDA_ARCH_LIST=$TORCH_CUDA_ARCH_LIST pip install git+https://github.com/facebookresearch/xformers@51dd119#egg=xformers
 
 # RUN conda install -y -c nvidia/label/cuda-11.3.0 cuda-nvcc
@@ -44,12 +51,7 @@ RUN FORCE_CUDA=1 TORCH_CUDA_ARCH_LIST=$TORCH_CUDA_ARCH_LIST pip install git+http
 # RUN conda install -y -c conda-forge gxx_linux-64=9.5.0
 # RUN FORCE_CUDA=1 TORCH_CUDA_ARCH_LIST=6.0  pip install git+https://github.com/facebookresearch/xformers
 
-ADD . .
-RUN pip install --no-deps -e .
 
-# Add your model weight files 
-# (in this case we have a python script)
-ADD download.py .
-RUN python3 download.py
+RUN pip install --no-deps -e .
 
 CMD python3 -u server.py
