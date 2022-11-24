@@ -11,8 +11,6 @@ RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.d
 RUN apt-get install git-lfs
 RUN git lfs install
 
-RUN FORCE_CUDA=1 TORCH_CUDA_ARCH_LIST=$TORCH_CUDA_ARCH_LIST pip install git+https://github.com/facebookresearch/xformers@51dd119#egg=xformers
-
 # Install python packages
 RUN pip3 install --upgrade pip
 ADD requirements.txt requirements.txt
@@ -35,6 +33,8 @@ ADD app.py .
 RUN pip install --upgrade pytorch_lightning
 RUN apt-get install ffmpeg libsm6 libxext6  -y
 RUN pip install opencv-python
+
+RUN FORCE_CUDA=1 TORCH_CUDA_ARCH_LIST=$TORCH_CUDA_ARCH_LIST pip install git+https://github.com/facebookresearch/xformers@51dd119#egg=xformers
 
 # RUN conda install -y -c nvidia/label/cuda-11.3.0 cuda-nvcc
 # RUN conda install -y -c conda-forge gcc
